@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } else {
                         HashMap hashMap = new HashMap();
                         hashMap.put("userID", mUser.getUid());
-                        hashMap.put("latitude", latLngCurrentLocation.longitude);
+                        hashMap.put("latitude", latLngCurrentLocation.latitude);
                         hashMap.put("longitude", latLngCurrentLocation.longitude);
                         hashMap.put("markerName", inputMarkerName.getText().toString());
                         mRef.child(mUser.getUid()).push().updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {

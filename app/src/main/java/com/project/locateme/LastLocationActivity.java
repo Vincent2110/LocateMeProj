@@ -2,6 +2,7 @@ package com.project.locateme;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.locateme.Utills.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,10 @@ public class LastLocationActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     List<mLocation>list;
+    RecyclerViewAdapter adapter;
+    Toolbar toolbar;
+
+
 
 
     @Override
@@ -39,14 +45,22 @@ public class LastLocationActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        toolbar=findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Last Saved Location");
+
         mRef.child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list=new ArrayList<>();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    list=new ArrayList<>();
+
                     mLocation mLocation1=snapshot1.getValue(com.project.locateme.mLocation.class);
                     list.add(mLocation1);
                 }
+                adapter=new RecyclerViewAdapter(list,LastLocationActivity.this);
+                recyclerView.setAdapter(adapter);
+
 
             }
 

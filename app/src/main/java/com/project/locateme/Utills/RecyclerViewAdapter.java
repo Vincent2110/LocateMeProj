@@ -1,6 +1,7 @@
 package com.project.locateme.Utills;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.locateme.R;
+import com.project.locateme.ViewLocationActivity;
 import com.project.locateme.mLocation;
 
 import java.util.List;
@@ -34,6 +36,17 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
         holder.latitude.setText(list.get(position).getLatitude()+"");
         holder.logntide.setText(list.get(position).getLongitude()+"");
         holder.location.setText(list.get(position).getMarkerName());
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(context, ViewLocationActivity.class);
+                intent.putExtra("latitude",list.get(position).getLatitude());
+                intent.putExtra("longitude",list.get(position).getLongitude());
+                intent.putExtra("name",list.get(position).getMarkerName());
+                context.startActivity(intent);
+            }
+        });
 
     }
 
