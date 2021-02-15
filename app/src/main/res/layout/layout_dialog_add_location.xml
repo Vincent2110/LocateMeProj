@@ -63,6 +63,7 @@
                 android:layout_marginEnd="24dp"
                 android:ems="10"
                 android:hint="Marker name"
+                android:background="@drawable/input_bg"
                 android:inputType="textPersonName"
                 android:paddingLeft="15dp"
                 android:paddingTop="5dp"

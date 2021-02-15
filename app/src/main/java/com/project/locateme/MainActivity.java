@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -21,6 +22,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     LocationManager locationManager;
     public static final int GPS = 101;
 
+    Toolbar toolbar;
+
+
     //current location lat,long stored varibale
     LatLng latLngCurrentLocation;
 
@@ -91,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         addLocationBtn = findViewById(R.id.addLocationBtn);
         dialog = new Dialog(this);
+        toolbar=findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Home");
+
 
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -119,9 +129,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mLocation post = postSnapshot.getValue(mLocation.class);
                     listSavedLocation.add(post);
 
-                    Toast.makeText(MainActivity.this, ""+post.getMarkerName(), Toast.LENGTH_SHORT).show();
+
                     Marker marker = mGoogleMap.addMarker(new MarkerOptions().
-                            position(new LatLng(post.getLatitude(),post.getLongitude())).
+                            position(new LatLng(post.getLatitude(), post.getLongitude())).
                             title(post.getMarkerName()));
                     marker.setTag(postSnapshot.getRef().getKey());
                 }
@@ -430,5 +440,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==R.id.lastLocation)
+        {
+            Intent intent=new Intent(MainActivity.this,LastLocationActivity.class);
+            startActivity(intent);
+        } if (item.getItemId()==R.id.logout)
+        {
+            mAuth.signOut();
+            Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+            intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK|intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
