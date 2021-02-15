@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "307604562145",
+    "project_id": "locateme-ab6f3",
+    "storage_bucket": "locateme-ab6f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307604562145:android:f5c200be31139e114897a0",
+        "android_client_info": {
+          "package_name": "com.project.locateme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307604562145-b04pq00jde3anlv3pmvb3hf7dkmm1tmg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.locateme",
+            "certificate_hash": "955c6671ae4de4509cf212aeb749123053a37176"
+          }
+        },
+        {
+          "client_id": "307604562145-8u17g76llcocm6gbit79emkcucak89bs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVBJkl5lxfGq_U45O-WL4WmiB81kamXrQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307604562145-8u17g76llcocm6gbit79emkcucak89bs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
