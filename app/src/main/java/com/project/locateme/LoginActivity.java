@@ -26,12 +26,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
+    //Variable Dec
     EditText inputEmail;
     EditText inputPassword;
     Button btnLogin;
     TextView createNEwAccount;
     ProgressDialog progressBar;
-
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     DatabaseReference mUserRef;
@@ -43,19 +43,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //init varibale
         inputEmail=findViewById(R.id.inputEMail);
         inputPassword=findViewById(R.id.inputPassword);
         btnLogin=findViewById(R.id.btnLogin);
 
         createNEwAccount=findViewById(R.id.createNewAccount);
         progressBar=new ProgressDialog(this);
-
-
         mAuth=FirebaseAuth.getInstance();
-
-
         mUserRef= FirebaseDatabase.getInstance().getReference().child("Users");
 
+
+        //click on create new account to open register page
         createNEwAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+        //set click listner on login button to perform login
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,18 +109,21 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
+    //check Editer user saved Setup profile data or not.If not then send user t setup Page to add this data
     private void CHeckUserData() {
         mUserRef.child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.child("username").exists())
                 {
+                    //if user saved data of setup then open main page
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 }else {
-
+                    //if user did not saved data of setup page then open setuppage
                     Intent intent = new Intent(LoginActivity.this, SetupActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

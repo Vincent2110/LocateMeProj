@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.locateme.R;
 import com.project.locateme.ViewLocationActivity;
-import com.project.locateme.mLocation;
 
 import java.util.List;
 
+
+//Recyclerview adapter to show list of items
 public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapter.MyVIewHolder> {
+
     List<mLocation>list;
     Context context;
 

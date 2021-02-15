@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class ViewLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-
+//Varibale init
     SupportMapFragment mapFrag;
     double latitude;
     double longitude;
@@ -26,9 +26,10 @@ public class ViewLocationActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_location);
 
+
+        //get latitude and longitude from previous activity
          latitude=getIntent().getDoubleExtra("latitude",0.0);
          longitude=getIntent().getDoubleExtra("longitude",0.0);
-
          name=getIntent().getStringExtra("name");
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -39,6 +40,9 @@ public class ViewLocationActivity extends AppCompatActivity implements OnMapRead
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
+        //when map ready then show location that that you clciked from your saved location
         Toast.makeText(this, ""+latitude, Toast.LENGTH_SHORT).show();
         MarkerOptions markerOptions=new MarkerOptions();
         markerOptions.position(new LatLng(latitude,longitude));

@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegisterActivity extends AppCompatActivity {
 
 
+    //Veribale Decleration
     EditText inputEmail;
     EditText inputPassword;
     EditText inputConfrimPassword;
@@ -41,20 +42,20 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        progressBar=new ProgressDialog(this);
 
-        inputEmail=findViewById(R.id.inputEMail);
-        inputPassword=findViewById(R.id.inputPassword);
-        inputConfrimPassword=findViewById(R.id.inputConfirmPassword);
-        btnRegister=findViewById(R.id.btnRegister);
+        //init varibale
+        progressBar = new ProgressDialog(this);
+        inputEmail = findViewById(R.id.inputEMail);
+        inputPassword = findViewById(R.id.inputPassword);
+        inputConfrimPassword = findViewById(R.id.inputConfirmPassword);
+        btnRegister = findViewById(R.id.btnRegister);
 
-        alreadyHaveAccount=findViewById(R.id.alreadyHaveAccount);
+        alreadyHaveAccount = findViewById(R.id.alreadyHaveAccount);
+        mAuth = FirebaseAuth.getInstance();
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
 
-        mAuth=FirebaseAuth.getInstance();
-
-
-        mUserRef= FirebaseDatabase.getInstance().getReference().child("Users");
+        //click on already have account to open login page
         alreadyHaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,42 +66,41 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+
+        //click on register button to perform registration
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email=inputEmail.getText().toString();
-                String password=inputPassword.getText().toString();
-                String confrimPassword=inputConfrimPassword.getText().toString();
+                String email = inputEmail.getText().toString();
+                String password = inputPassword.getText().toString();
+                String confrimPassword = inputConfrimPassword.getText().toString();
 
-                if (email.isEmpty() || !email.contains("@"))
-                {
+                if (email.isEmpty() || !email.contains("@")) {
                     inputEmail.setError("Enter Correct format Email");
                     inputEmail.requestFocus();
-                }else if (password.isEmpty() || password.length()<6)
-                {
+                } else if (password.isEmpty() || password.length() < 6) {
                     inputPassword.setError("Enter min 7 latter password");
-                }else if (!confrimPassword.equals(password))
-                {
+                } else if (!confrimPassword.equals(password)) {
                     inputConfrimPassword.setError("Pasword not match both field");
-                }else
-                {
+                } else {
+                    //if user enter valid format of email and password then perform registration
                     progressBar.setMessage("Registration...");
                     progressBar.setCanceledOnTouchOutside(false);
                     progressBar.show();
-                    mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful())
-                            {
-                             progressBar.dismiss();
+                            if (task.isSuccessful()) {
+                                progressBar.dismiss();
+
+                                //after successfull registration open Setup activity
                                 Intent intent = new Intent(RegisterActivity.this, SetupActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
-                            }else
-                            {
+                            } else {
                                 progressBar.dismiss();
-                                Toast.makeText(RegisterActivity.this, ""+task.getException(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

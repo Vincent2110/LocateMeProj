@@ -38,6 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SetupActivity extends AppCompatActivity {
 
 
+    //Veribale Dec
     CircleImageView profileImageView;
     EditText inputUsername;
     EditText inputAdress;
@@ -48,7 +49,6 @@ public class SetupActivity extends AppCompatActivity {
     DatabaseReference DataRef;
     StorageReference StorageRef;
     FirebaseUser mUser;
-
     public static final int IMAGE_PICKER_SELECT = 101;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA =1010 ;
 
@@ -57,29 +57,36 @@ public class SetupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
+
+        //Varibale Init
         profileImageView = findViewById(R.id.profileImage);
         inputUsername = findViewById(R.id.inputUsername);
         inputAdress = findViewById(R.id.inputAddress);
         btnSave = findViewById(R.id.btnSave);
         mLoadingBar=new ProgressDialog(this);
-
         mAuth= FirebaseAuth.getInstance();
         mUser=mAuth.getCurrentUser();
         DataRef= FirebaseDatabase.getInstance().getReference().child("Users");
         StorageRef= FirebaseStorage.getInstance().getReference().child("ProfileImages");
 
+
+        //set click listner on profile Image to select image using camera sensor
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                //Android device need permission from user ,can app use camera sensor or not
                 if (ContextCompat.checkSelfPermission(SetupActivity.this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED ) {
 
+                    //if permission not allowd then request permision
                     ActivityCompat.requestPermissions(SetupActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_CAMERA);
                 }else {
+
+                    //otherwise open camera to take image
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(MediaStore.Images.Media.TITLE, "New Pic");
                     contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Front Camera Pic");
@@ -94,6 +101,7 @@ public class SetupActivity extends AppCompatActivity {
         });
 
 
+        //set Click listner on btn save button to save info in database
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +111,8 @@ public class SetupActivity extends AppCompatActivity {
 
     }
 
+
+    //check Edither user allowsed permission or not
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -120,6 +130,8 @@ public class SetupActivity extends AppCompatActivity {
     }
 
 
+
+    //saved user infor method
     private void SaveProfile() {
         final String username=inputUsername.getText().toString();
        final String address=inputAdress.getText().toString();
@@ -139,6 +151,8 @@ public class SetupActivity extends AppCompatActivity {
         }
         else
         {
+
+            //if user put valid info in input field then he can Saved data
             mLoadingBar.setTitle("Saving Profile");
             mLoadingBar.setCanceledOnTouchOutside(false);
             mLoadingBar.show();
@@ -153,6 +167,8 @@ public class SetupActivity extends AppCompatActivity {
                     DataRef.child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(task -> {
                         if (task.isSuccessful())
                         {
+
+                            //fater saving data in database,open Main activity
                             mLoadingBar.dismiss();
                             Intent intent=new Intent(SetupActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -174,8 +190,7 @@ public class SetupActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
+//If permisison alloed to open camera and take oic and user in URI and store in firebase database
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.

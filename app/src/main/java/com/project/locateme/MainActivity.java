@@ -54,12 +54,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.locateme.Utills.mLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, LocationListener {
+
+    //varibale dec
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
@@ -69,17 +72,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     View mapView;
     LocationManager locationManager;
     public static final int GPS = 101;
-
     Toolbar toolbar;
 
 
-    //current location lat,long stored varibale
     LatLng latLngCurrentLocation;
-
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     DatabaseReference mRef;
-
     ImageView addLocationBtn;
 
     Dialog dialog;
@@ -91,23 +90,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //varibale init
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mRef = FirebaseDatabase.getInstance().getReference().child("Locations");
 
         addLocationBtn = findViewById(R.id.addLocationBtn);
         dialog = new Dialog(this);
-        toolbar=findViewById(R.id.app_bar);
+        toolbar = findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
 
-
-
+        //map decleration
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
         mapView = mapFrag.getView();
 
+
+        //set click listner add location button to call save location method
         addLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,31 +121,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private void LoadSavedLocation() {
-        mRef.child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listSavedLocation = new ArrayList<>();
-                listSavedLocation.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    mLocation post = postSnapshot.getValue(mLocation.class);
-                    listSavedLocation.add(post);
 
-
-                    Marker marker = mGoogleMap.addMarker(new MarkerOptions().
-                            position(new LatLng(post.getLatitude(), post.getLongitude())).
-                            title(post.getMarkerName()));
-                    marker.setTag(postSnapshot.getRef().getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
+    //click on add location button to open dialog
     private void storeCurrentLocation() {
         if (latLngCurrentLocation != null) {
 
@@ -155,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Button btnCancel = dialog.findViewById(R.id.btnCancel);
             EditText inputMarkerName = dialog.findViewById(R.id.inputMarkerName);
 
+
+            //click on close button on add location dialog to close dialog
             imageViewClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -163,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
+            //click on camcel button on add location dialog to close dialog
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -170,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 }
             });
+
+            //click on save button to save location in database
             btnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -196,17 +180,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
-
             dialog.show();
         } else {
             Toast.makeText(this, "Enable Current Location", Toast.LENGTH_SHORT).show();
         }
     }
 
+
+    //close gps when map is stop
     @Override
     public void onPause() {
         super.onPause();
-
         //stop location updates when Activity is no longer active
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -255,10 +239,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        LoadSavedLocation();
         //chnage the postion of my location button from top to bottom
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -290,16 +274,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 50, 30);
 
-            // View addLocationBtnVIew = ((View) rvLayout.findViewById(R.id.addLocationBtn));
-
-//            RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)
-//                    addLocationBtnVIew.getLayoutParams();
-//            layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-//            layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-//            layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-//            layoutParams2.setMargins(0, 0, 30, 160);
-            //Initialize Google Play Services
-
 
             mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -311,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    //prepare google ma client to request google map info
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -320,6 +295,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleApiClient.connect();
     }
 
+
+    //When map is connect with services
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
@@ -341,6 +318,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnectionFailed(ConnectionResult connectionResult) {
     }
 
+
+    //when user move it will chnage the location and automethically call this method
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -353,6 +332,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
+
+    //check current location permisision
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -388,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -425,6 +407,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
+    //check Either gps is enable or disable
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -442,23 +426,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
+    //add menu on Main page logout and all location list
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+
+
+    //check which item is clicked on from menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId()==R.id.lastLocation)
-        {
-            Intent intent=new Intent(MainActivity.this,LastLocationActivity.class);
+        if (item.getItemId() == R.id.lastLocation) {
+            Intent intent = new Intent(MainActivity.this, LastLocationActivity.class);
             startActivity(intent);
-        } if (item.getItemId()==R.id.logout)
-        {
+        }
+        if (item.getItemId() == R.id.logout) {
             mAuth.signOut();
-            Intent intent=new Intent(MainActivity.this,LoginActivity.class);
-            intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK|intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }

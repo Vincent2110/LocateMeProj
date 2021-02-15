@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.locateme.Utills.RecyclerViewAdapter;
+import com.project.locateme.Utills.mLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +50,18 @@ public class LastLocationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Last Saved Location");
 
+
+        //load previous location method
         mRef.child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list=new ArrayList<>();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
 
-                    mLocation mLocation1=snapshot1.getValue(com.project.locateme.mLocation.class);
+                    mLocation mLocation1=snapshot1.getValue(mLocation.class);
                     list.add(mLocation1);
                 }
+                //set all items to recyclerview
                 adapter=new RecyclerViewAdapter(list,LastLocationActivity.this);
                 recyclerView.setAdapter(adapter);
 

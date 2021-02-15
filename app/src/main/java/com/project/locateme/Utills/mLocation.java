@@ -1,5 +1,6 @@
-package com.project.locateme;
+package com.project.locateme.Utills;
 
+//Location model class
 public class mLocation {
 
     private String userID;
